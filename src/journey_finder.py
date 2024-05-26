@@ -48,17 +48,15 @@ class JourneyFinder:
         delay_predictor = DelayPredictorDummy()
         journey_confidences = []
         for journey in journeys:
-            trip_ids, stations_ids, timestamps = [], [], []
+            stations_ids, timestamps = [], []
             for leg in journey[:-1]:
                 start_name = self.stops_info[self.stops_info['stop_id'] == leg['start_stop']]['stop_name'].values[0]
                 end_name = self.stops_info[self.stops_info['stop_id'] == leg['arrival_stop']]['stop_name'].values[0]
-                trip_id = None # TODO: Find the trip_id for the leg
                 end_time = leg['arrival_time']
-                trip_ids.append(trip_id)
                 stations_ids.append(leg['arrival_stop'])
                 timestamps.append(end_time)
 
-            delay_predictions = delay_predictor.predict(trip_ids, stations_ids, timestamps)
+            delay_predictions = delay_predictor.predict(stations_ids, timestamps)
             confidence = journey_confidence_on_arrival_delay_predictions(
                 journey,
                 delay_predictions,
