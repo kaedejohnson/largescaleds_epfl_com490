@@ -54,7 +54,7 @@ class JourneyPlotter:
                 journey=legs,
                 stops_info=stops_info,
                 source_id=source_stop_id,
-                desination_id=destination_stop_id,
+                destination_id=destination_stop_id,
                 arrival_time=pd.to_datetime(legs[-2]['arrival_time'], unit='s').strftime('%H:%M:%S'),
                 confidence=confidence
             )
@@ -63,7 +63,7 @@ class JourneyPlotter:
         return figs
     
     
-    def __plot_single_journey(self, journey: list, stops_info: pd.DataFrame, source_id: str, desination_id: str, arrival_time: str, confidence: float) -> None:
+    def __plot_single_journey(self, journey: list, stops_info: pd.DataFrame, source_id: str, destination_id: str, arrival_time: str, confidence: float) -> None:
         """Plot the journey on a map.
 
         Args:
@@ -75,7 +75,7 @@ class JourneyPlotter:
             confidence (float): The confidence of the journey.
         """
         plot_df = []
-        
+        print(journey)
         for step in journey:
             row = {}
             dep_info = stops_info[stops_info['stop_id'] == step['start_stop']]
@@ -127,7 +127,7 @@ class JourneyPlotter:
         ))
         
         # Add a green marker for the source stop
-        start_info = stops_info[stops_info['stop_name'] == source_id]  
+        start_info = stops_info[stops_info['stop_id'] == source_id]  
         start_time = plot_df.iloc[0]['dep_time']
         fig.add_trace(go.Scattermapbox(
             lon=[start_info['stop_lon'].values[0]],
@@ -143,11 +143,11 @@ class JourneyPlotter:
         ))
         
         # Add a red marker for the destination stop
-        desination_info = stops_info[stops_info['stop_name'] == desination_id]
+        destination_info = stops_info[stops_info['stop_id'] == destination_id]
         arr_time = plot_df.iloc[-1]['dep_time']
         fig.add_trace(go.Scattermapbox(
-            lon=[desination_info['stop_lon'].values[0]],
-            lat=[desination_info['stop_lat'].values[0]],
+            lon=[destination_info['stop_lon'].values[0]],
+            lat=[destination_info['stop_lat'].values[0]],
             mode='markers',
             name='Destination Stop',
             marker=go.scattermapbox.Marker(
@@ -155,7 +155,7 @@ class JourneyPlotter:
                 color='red'
             ),
             hoverinfo='text',
-            hovertemplate=f"Stop-Name: {desination_info['stop_name'].values[0]}<br>Arr-Time: {arr_time}<extra></extra>",
+            hovertemplate=f"Stop-Name: {destination_info['stop_name'].values[0]}<br>Arr-Time: {arr_time}<extra></extra>",
         ))
             
         fig.add_trace(go.Scattermapbox(
@@ -177,10 +177,10 @@ class JourneyPlotter:
         center_lat = plot_df['dep_lat'].mean()
         center_lon = plot_df['dep_lon'].mean()
 
-        start_name = source_id
-        destination_name = desination_id
+        start_name = start_info['stop_name'].values[0]
+        destination_name = destination_info['stop_name'].values[0]
         fig.update_layout(
-            title=f'Journey from {start_name} ({source_id}) at {destination_name} ({desination_id}) arriving at {arrival_time}.<br>Confidence: {round(confidence, 4)}',
+            title=f'Journey from {start_name} ({source_id}) to {destination_name} ({destination_id}) arriving at {arrival_time}.<br>Confidence: {round(confidence, 4)}',
             showlegend=True,
             mapbox=dict(
                 style='open-street-map',

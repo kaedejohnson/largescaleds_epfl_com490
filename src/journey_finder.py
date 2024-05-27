@@ -22,7 +22,7 @@ class JourneyFinder:
         self.stops_info = stops_info
 
 
-    def __find_station_id(self, station_name: str) -> int:
+    def __find_station_id(self, station_name_id: str) -> int:
         """
         Finds the station id for a given station name.
         
@@ -32,10 +32,10 @@ class JourneyFinder:
         Returns: 
             Station id.
         """
-        return self.stops_info[self.stops_info['stop_name'] == station_name]['stop_id'].values[0]
+        return self.stops_info[self.stops_info['stop_name_id'] == station_name_id]['stop_id'].values[0]
 
 
-    def find_journeys(self, start_station_name, end_station_name, arrival_datetime: str, confidence_threshold=0.7):
+    def find_journeys(self, start_station_id, end_station_id, arrival_datetime: str, confidence_threshold=0.7):
         """
         Finds the journeys between two stations that arrive at the destination station at the given time.
 
@@ -51,9 +51,6 @@ class JourneyFinder:
             'confidence': Confidence of the journey
         }
         """
-
-        start_station_id = self.__find_station_id(start_station_name)
-        end_station_id = self.__find_station_id(end_station_name)
 
         #arrival_time = arrival_datetime.split('T')[1]
         arrival_time = arrival_datetime
@@ -81,6 +78,8 @@ class JourneyFinder:
             )
             journey_confidences.append(confidence)
 
+        print(confidence)
+        
         return [
             {'journey': journey, 'confidence': confidence} 
             for journey, confidence in zip(journeys, journey_confidences) if confidence >= confidence_threshold
@@ -306,21 +305,25 @@ class JourneyFinder:
         return journeys
             
             
-    def find_and_plot_journeys(self, start_station_name: str, end_station_name: str, arrival_datetime: str, confidence_threshold=0.7) -> list:
+    def find_and_plot_journeys(self, start_station_name_id: str, end_station_name_id: str, arrival_datetime: str, confidence_threshold=0.7) -> list:
         """Find and plot the journeys between two stations that arrive at the destination station at the given time with a confidence above the threshold.
 
         Args:
-            start_station_name (_type_): The name of the start station.
-            end_station_name (_type_): The name of the end station.
+            start_station_name_id (_type_): The name of the start station.
+            end_station_name_id (_type_): The name of the end station.
             arrival_datetime (str): The arrival datetime in the format 'HH:MM:SS'.
             confidence_threshold (float, optional): The confidence threshold for the journey. Defaults to 0.7.
 
         Returns:
             list: A list of figures.
         """
+
+        start_station_id = self.__find_station_id(start_station_name_id)
+        end_station_id = self.__find_station_id(end_station_name_id)
+
         journeys_and_confidence = self.find_journeys(
-            start_station_name=start_station_name,
-            end_station_name=end_station_name,
+            start_station_id=start_station_id,
+            end_station_id=end_station_id,
             arrival_datetime=arrival_datetime,
             confidence_threshold=confidence_threshold
         )
@@ -330,8 +333,8 @@ class JourneyFinder:
             plotter = JourneyPlotter()
             figs = plotter.plot_journeys(
                 journeys=journeys_and_confidence,
-                source_stop_id=start_station_name,
-                destination_stop_id=end_station_name,
+                source_stop_id=start_station_id,
+                destination_stop_id=end_station_id,
                 stops_info=self.stops_info
             )
             return figs
