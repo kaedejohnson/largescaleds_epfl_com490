@@ -1,7 +1,7 @@
 from pyspark.sql.functions import col, to_timestamp, hour, minute
 
 
-class DelayPredictorDummy:
+class DelayPredictor:
     def __init__(self, features_with_stats, loadedPipelineModel):
         self.features_with_stats = features_with_stats
         self.loadedPipelineModel = loadedPipelineModel
