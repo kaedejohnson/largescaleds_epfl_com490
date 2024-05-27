@@ -143,7 +143,7 @@ class JourneyFinder:
             return S, T
             
         # init S entries for footpaths leading to destination stop
-        for _, fp in footpaths[footpaths['stop_id_a'] == 'destination_stop_id'].iterrows():
+        for _, fp in footpaths[footpaths['stop_id_a'] == destination_stop_id].iterrows():
             S[fp['stop_id_b']] = {
                 'transport': 'walking',
                 'start_time': total_seconds_arrival - fp['duration'],
@@ -192,7 +192,6 @@ class JourneyFinder:
                             'arrival_time': row['dep_time'],
                             'arrival_stop': fp['stop_id_a']
                         }
-            print(S)
         return S, T
 
 
