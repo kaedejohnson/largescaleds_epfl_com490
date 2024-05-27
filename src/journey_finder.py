@@ -3,7 +3,7 @@ import pandas as pd
 from typing import Tuple
 
 from src.journey_plotter import JourneyPlotter
-from src.delay_prediction import DelayPredictorDummy
+from src.delay_prediction import DelayPredictor
 from src.confidence_calculation import journey_confidence_on_arrival_delay_predictions
 
 
