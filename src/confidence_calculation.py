@@ -23,6 +23,11 @@ def journey_confidence_on_arrival_delay_predictions(journey, arrival_delay_predi
     walking_time = 0
     confidence = 1.0
 
+
+    # REMOVE REMOVE REMOVE REMOVE 
+    # for verifying journeys alone; must replace with reality
+    arrival_delay_predictions = [0 for el in arrival_delay_predictions]
+
     journey_arrival_time_in_secs = time_from_string(journey_arrival_datetime)
 
     for leg, delay in zip(journey[0:-1], arrival_delay_predictions):

@@ -71,6 +71,7 @@ class JourneyFinder:
                 timestamps.append(end_time)
 
             delay_predictions = delay_predictor.predict(stations_ids, timestamps)
+
             confidence = journey_confidence_on_arrival_delay_predictions(
                 journey,
                 delay_predictions,
@@ -78,8 +79,8 @@ class JourneyFinder:
             )
             journey_confidences.append(confidence)
 
-        print(confidence)
-        
+
+
         return [
             {'journey': journey, 'confidence': confidence} 
             for journey, confidence in zip(journeys, journey_confidences) if confidence >= confidence_threshold
@@ -191,7 +192,7 @@ class JourneyFinder:
                             'arrival_time': row['dep_time'],
                             'arrival_stop': fp['stop_id_a']
                         }
-
+            print(S)
         return S, T
 
 
