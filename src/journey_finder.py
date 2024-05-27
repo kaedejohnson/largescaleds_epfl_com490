@@ -8,7 +8,7 @@ from src.confidence_calculation import journey_confidence_on_arrival_delay_predi
 
 
 class JourneyFinder:
-    def __init__(self, timetable, footpaths, stops_info):
+    def __init__(self, timetable, footpaths, stops_info, delay_predictor):
         """
         Initialises the JourneyFinder object.
         
@@ -20,6 +20,7 @@ class JourneyFinder:
         self.timetable = timetable
         self.footpaths = footpaths
         self.stops_info = stops_info
+        self.delay_predictor = delay_predictor
 
 
     def __find_station_id(self, station_name_id: str) -> int:
@@ -61,7 +62,6 @@ class JourneyFinder:
             arrival_time,
             num_journeys=5)
 
-        delay_predictor = DelayPredictorDummy()
         journey_confidences = []
         for journey in journeys:
             stations_ids, timestamps = [], []
@@ -70,7 +70,7 @@ class JourneyFinder:
                 stations_ids.append(leg['arrival_stop'])
                 timestamps.append(end_time)
 
-            delay_predictions = delay_predictor.predict(stations_ids, timestamps)
+            delay_predictions = self.delay_predictor.predict(stations_ids, timestamps)
 
             confidence = journey_confidence_on_arrival_delay_predictions(
                 journey,
