@@ -1,10 +1,8 @@
 import numpy as np
 import pandas as pd
 from typing import Tuple
+import plotly.graph_objs as go
 
-timetable = pd.read_csv('data/timetable.csv')
-footpaths = pd.read_csv('data/footpaths.csv')
-stops_info = pd.read_csv('data/stops.csv')
 
 def connection_scan_latest_arrival(timetable: pd.DataFrame, footpaths: pd.DataFrame, source_stop_id: str, destination_stop_id: str, arrival_time: str) -> Tuple[dict, dict]:
     """Use the connection scan algorithm (SCA) to find the latest possible departure from the source stop such
@@ -114,6 +112,7 @@ def connection_scan_latest_arrival(timetable: pd.DataFrame, footpaths: pd.DataFr
 
     return S, T
 
+
 def journey_extraction_latest_arrival(S: dict, source_stop_id: str, destination_stop_id: str, arrival_time: str) -> list:
     """Extract the journey from the source stop to the destination stop based on the latest possible arrival time.
 
@@ -173,6 +172,7 @@ def journey_extraction_latest_arrival(S: dict, source_stop_id: str, destination_
         print('No path exists starting from "{}" and arriving to "{}" by {}'.format(source_stop_id, destination_stop_id, arrival_time))
         return None
 
+
 def get_latest_arrival_journey(timetable: pd.DataFrame, footpaths: pd.DataFrame, source_stop_id: str, destination_stop_id: str, arrival_time: str) -> list:
     """Get the ideal journey from the source stop to the destination stop based on the latest possible arrival time.
 
@@ -191,9 +191,6 @@ def get_latest_arrival_journey(timetable: pd.DataFrame, footpaths: pd.DataFrame,
     ideal_journey = journey_extraction_latest_arrival(S, source_stop_id, destination_stop_id, arrival_time)
     return ideal_journey
 
-
-import plotly.express as px
-import plotly.graph_objs as go
 
 def plot_journey(journey: list, stops_info: pd.DataFrame, source_id: str, desination_id: str, arrival_time: str) -> None:
     """Plot the journey on a map.
@@ -322,6 +319,7 @@ def plot_journey(journey: list, stops_info: pd.DataFrame, source_id: str, desina
     
     fig.show()
 
+
 def print_journey_human_readable(journey):
     for leg in journey[0:-1]:
         start_name = stops_info[stops_info['stop_id'] == leg['start_stop']]['stop_name'].values[0]
@@ -333,6 +331,7 @@ def print_journey_human_readable(journey):
         else:
             type = 'ride'
         print(type, start_name, '->', end_name, f'({start_time} to {end_time})')
+
 
 def find_and_plot_journeys(timetable, footpaths, source_stop_id, destination_stop_id, arrival_time, verbose = True, num_journeys = 5):
     journeys = []

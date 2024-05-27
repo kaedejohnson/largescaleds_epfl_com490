@@ -7,7 +7,8 @@ def transfer_confidence_simple(arrival_delay, time_budget):
     return sps.expon.cdf(time_budget, scale=arrival_delay)
 
 def time_from_string(datetime_str):
-    date_str, time_str = datetime_str.split('T')
+    #date_str, time_str = datetime_str.split('T')
+    time_str = datetime_str
     h, m, s = map(int, time_str.split(':'))
     return h * 3600 + m * 60 + s
 
