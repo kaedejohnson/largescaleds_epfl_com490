@@ -301,7 +301,13 @@ class JourneyFinder:
             else:
                 journeys.append(journey)
             
-            arrival_time = pd.to_datetime(journey[-2]['arrival_time'] - 1, unit='s').strftime('%H:%M:%S')
+            # if last step is walking, require the next journey to arrive one second sooner than that walking step would allow
+            if journey[-2]['transport'] == 'walking':
+                arrival_time = pd.to_datetime(journey[-3]['arrival_time'] + (self.footpaths[(self.footpaths['stop_id_a'] == journey[-2]['start_stop']) & (self.footpaths['stop_id_b'] == destination_stop_id)]['duration'].values[0]) - 1, unit='s').strftime('%H:%M:%S')
+            # if last step is not walking, require the next journey to arrive one second sooner
+            else:
+                arrival_time = pd.to_datetime(journey[-2]['start_time'] - 1, unit='s').strftime('%H:%M:%S')
+                
         return journeys
             
             
